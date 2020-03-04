@@ -12,11 +12,12 @@ import UIKit
 
 extension AppController {
 
-    func showProgress(after: TimeInterval = 1) {
+    func showProgress(after: TimeInterval = 1, status: String? = nil) {
         SVProgressHUD.setDefaultMaskType(.clear)
         SVProgressHUD.setBackgroundColor(UIColor.background.default)
-        SVProgressHUD.setForegroundColor(UIColor.tint.default)
+        SVProgressHUD.setForegroundColor(UIColor.red)
         SVProgressHUD.setGraceTimeInterval(after)
+        SVProgressHUD.setStatus(status)
         SVProgressHUD.show()
     }
 

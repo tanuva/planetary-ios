@@ -57,10 +57,7 @@ class GoBot: Bot {
     func resume()  {
         self.queue.async {
             // make some sync connections to pull new messages
-            let n = 2 // how many connections to establish
-            if !self.bot.dialSomePeers() {
-                Log.unexpected(.botError, "failed to make \(n) sync connections after app resume")
-            }
+            self.bot.dialSomePeers()
         }
     }
 
@@ -256,6 +253,7 @@ class GoBot: Bot {
         guard self._isRefreshing == false else { completion(nil, 0); return }
         self._isRefreshing = true
         let elapsed = Date()
+        AppController.shared.showProgress(status: "Refreshing View Database")
         self.queue.async {
             self.updateReceive() {
                 [weak self] error in
@@ -274,7 +272,9 @@ class GoBot: Bot {
             self._isRefreshing = false
             self._statistics.lastRefreshDate = Date()
             self._statistics.lastRefreshDuration = elapsed
-            completion(error, elapsed)
+            AppController.shared.hideProgress() {
+                completion(error, elapsed)
+            }
             NotificationCenter.default.post(name: .didRefresh, object: nil)
             Analytics.trackBotDidRefresh(duration: elapsed, error: error)
         }

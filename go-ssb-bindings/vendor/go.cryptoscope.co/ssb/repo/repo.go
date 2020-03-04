@@ -121,9 +121,11 @@ func OpenMultiLog(r Interface, name string, f multilog.Func) (multilog.MultiLog,
 		}
 	}
 
+	/* TODO: find a smarter way to trigger this. it stalls boot very much
 	if err := mlog.CompressAll(); err != nil {
 		return nil, nil, errors.Wrapf(err, "failed to compress db")
 	}
+	*/
 
 	// todo: save the current state in the multilog
 	statePath := r.GetPath(PrefixMultiLog, name, "state_mkv.json")
