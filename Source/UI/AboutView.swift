@@ -11,9 +11,8 @@ import UIKit
 
 class AboutView: KeyValueView {
 
-    private let circleView: UIView = {
-        let view = UIView.forAutoLayout()
-        view.stroke()
+    private let circleView: CircleView = {
+        let view = CircleView.forAutoLayout()
         return view
     }()
 
@@ -28,6 +27,15 @@ class AboutView: KeyValueView {
         return label
     }()
 
+    private let unknownLabel: UILabel = {
+        let label = UILabel.forAutoLayout()
+        label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.textColor = UIColor.text.default
+        return label
+    }()
+    
     private let followingLabel: UILabel = {
         let label = UILabel.forAutoLayout()
         label.font = UIFont.systemFont(ofSize: 15, weight: .regular)
@@ -104,7 +112,9 @@ class AboutView: KeyValueView {
         insets.top = insets.top - 2
         Layout.fillSouth(of: self.circleView, with: self.nameLabel, insets: insets)
 
-        Layout.fillSouth(of: self.nameLabel, with: self.followingLabel, insets: .leftBottomRight)
+        Layout.fillSouth(of: self.nameLabel, with: self.unknownLabel, insets: .leftBottomRight)
+        
+        Layout.fillSouth(of: self.unknownLabel, with: self.followingLabel, insets: .leftBottomRight)
 
         let buttonStack = UIStackView.forAutoLayout()
         buttonStack.spacing = Layout.horizontalSpacing
@@ -146,7 +156,6 @@ class AboutView: KeyValueView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        self.circleView.round()
         self.editPhotoButton.round()
     }
 
@@ -203,6 +212,14 @@ class AboutView: KeyValueView {
                     identity: person.identity)
 
         self.imageView.load(for: person, animate: true)
+    }
+    
+    func showLoadingAnimation() {
+        self.circleView.startAnimating()
+    }
+    
+    func hideLoadingAnimation() {
+        self.circleView.stopAnimating()
     }
 
     var relationship: Relationship?

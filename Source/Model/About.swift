@@ -147,6 +147,11 @@ extension About {
         if let code = self.shortcode, code.localizedCaseInsensitiveContains(string) { return true }
         return false
     }
+    
+    var isUnknown: Bool {
+        return self.name == nil
+    }
+    
 }
 
 extension About: Comparable {

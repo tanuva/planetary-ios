@@ -78,9 +78,21 @@ class AboutViewController: ContentViewController {
         Bots.current.about(identity: self.identity) {
             [weak self] about, error in
             Log.optional(error)
-            guard let about = about else { return }
+            guard let about = about else {
+                self?.loadAboutFromDirectory()
+                return
+            }
             self?.about = about
             self?.update(with: about)
+        }
+    }
+    
+    private func loadAboutFromDirectory() {
+        self.aboutView.showLoadingAnimation()
+        // TODO: Replace this with an actual call to fetch the identity
+        VerseAPI.directory { [weak self] people, error in
+            Log.optional(error)
+            self?.aboutView.hideLoadingAnimation()
         }
     }
 
