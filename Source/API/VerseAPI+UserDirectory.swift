@@ -75,4 +75,12 @@ extension VerseAPI {
             completion(error == nil, error)
         }
     }
+    
+    static func directory(get identity: Identity, completion: @escaping ((Person?, APIError?) -> Void)) {
+        let urlEncodedIdentity = identity.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        let path = "/\(Environment.Verse.directoryPath)/get?identity=\(urlEncodedIdentity)"
+        self.api.get(path: path) { (data, error) in
+            completion(data?.person(), error)
+        }
+    }
 }

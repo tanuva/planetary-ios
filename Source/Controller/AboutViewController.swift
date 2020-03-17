@@ -13,6 +13,7 @@ class AboutViewController: ContentViewController {
 
     private let identity: Identity
     private var about: About?
+    private var person: Person?
 
     private let aboutView = AboutView()
 
@@ -79,7 +80,9 @@ class AboutViewController: ContentViewController {
             [weak self] about, error in
             Log.optional(error)
             guard let about = about else {
-                self?.loadAboutFromDirectory()
+                if self?.person == nil {
+                    self?.loadAboutFromDirectory()
+                }
                 return
             }
             self?.about = about
@@ -89,10 +92,13 @@ class AboutViewController: ContentViewController {
     
     private func loadAboutFromDirectory() {
         self.aboutView.showLoadingAnimation()
-        // TODO: Replace this with an actual call to fetch the identity
-        VerseAPI.directory { [weak self] people, error in
+        VerseAPI.directory(get: identity) { [weak self] person, error in
             Log.optional(error)
             self?.aboutView.hideLoadingAnimation()
+            if let person = person {
+                self?.person = person
+                self?.update(with: person)
+            }
         }
     }
 
