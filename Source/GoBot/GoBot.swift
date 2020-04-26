@@ -713,14 +713,12 @@ class GoBot: Bot {
         }
     }
 
-    func abouts(identities: Identities, completion: @escaping AboutsCompletion) {
+    func allAbouts(completion: @escaping AboutsCompletion) {
         Thread.assertIsMainThread()
         self.queue.async {
             var abouts: [About] = []
-            for identity in identities {
-                if let about = try? self.database.getAbout(for: identity) {
-                    abouts += [about]
-                }
+            if let about = try? self.database.allAbouts() {
+                abouts += [about]
             }
             DispatchQueue.main.async { completion(abouts, nil) }
         }
@@ -859,6 +857,18 @@ class GoBot: Bot {
                 CrashReporting.shared.reportIfNeeded(error: err)
                 completion(ref, nil)
                 NotificationCenter.default.post(name: .didUnblockUser, object: identity)
+            }
+        }
+    }
+    
+    func contacts(identity: FeedIdentifier, completion: @escaping ContactsCompletion) {
+        //Thread.assertIsMainThread()
+        self.queue.async {
+            do {
+                let who = try self.database.contacts(feed: identity)
+                DispatchQueue.main.async { completion(who, nil) }
+            } catch {
+                DispatchQueue.main.async { completion([], error) }
             }
         }
     }

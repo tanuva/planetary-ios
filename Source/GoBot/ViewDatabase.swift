@@ -498,6 +498,35 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
         return msgs.first
     }
     
+    // who is this one following and who is follwing back? aka friends
+    func allAbouts() throws -> [About] {
+        guard let db = self.openDB else {
+            throw ViewDatabaseError.notOpen
+        }
+        
+        let qry = self.abouts
+            .select(colAuthor.distinct)
+            .join(self.authors, on: colAuthorID == self.authors[colID])
+        
+        var who: [About] = []
+        /*
+        let followsQry = try db.prepare(qry)
+        for follow in followsQry {
+            let authorID: Identity = try follow.get(colAuthor.distinct)
+            who += [authorID]
+        }*/
+        
+        let msgs: [About] = try db.prepare(qry).map { row in
+            let about: About = About(about: id,
+                     name: try row.get(colName),
+                     description: try row.get(colDescr),
+                     imageLink: try row.get(colImage)
+                 )
+            who += [about]
+        }
+        return who
+    }
+    
     // MARK: follows and blocks
     
     // who is this feed following?
@@ -684,6 +713,8 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
         }
         return who
     }
+    
+
 
     // MARK: recent
 
