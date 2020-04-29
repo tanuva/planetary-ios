@@ -118,6 +118,12 @@ enum Text: String, Localizable, CaseIterable {
     case countOthers = "{{ count }} others"
     case andOneOther = " and 1 other"
 
+    case noReactions = "No reactions"
+    case oneReaction = "1 reaction"
+    case oneReactionFrom = "One reaction from "
+    case reactionsFrom = "Reactions from "
+    case reactionCount = "{{ count }} reactions"
+
     case countOnlinePeers = "{{ count }} ONLINE PEERS"
     case countLocalPeers = "{{ count }} LOCAL PEERS"
 

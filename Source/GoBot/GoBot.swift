@@ -934,9 +934,9 @@ class GoBot: Bot {
     private func internalThread(rootKey: MessageIdentifier, completion: @escaping ThreadCompletion) {
         do {
             let root = try self.database.get(key: rootKey)
-            let replies = try self.database.getRepliesTo(thread: rootKey)
+            let (replies, reactions) = try self.database.getRepliesTo(thread: rootKey)
             DispatchQueue.main.async {
-                completion(root, replies, nil)
+                completion(root, replies, reactions, nil)
             }
         } catch {
             DispatchQueue.main.async {

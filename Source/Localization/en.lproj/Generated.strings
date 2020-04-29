@@ -77,6 +77,11 @@
 "Text.andCountOthers" = " and {{ count }} others";
 "Text.countOthers" = "{{ count }} others";
 "Text.andOneOther" = " and 1 other";
+"Text.noReactions" = "No reactions";
+"Text.oneReaction" = "1 reaction";
+"Text.oneReactionFrom" = "One reaction from ";
+"Text.reactionsFrom" = "Reactions from ";
+"Text.reactionCount" = "{{ count }} reactions";
 "Text.countOnlinePeers" = "{{ count }} ONLINE PEERS";
 "Text.countLocalPeers" = "{{ count }} LOCAL PEERS";
 "Text.channels" = "Channels";

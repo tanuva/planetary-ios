@@ -21,6 +21,18 @@ class ThreadInteractionView: UIView {
             }
         }
     }
+    
+    var reactionsCount: Int = 0 {
+        didSet {
+            if self.reactionsCount == 0 {
+                self.reactionCountLabel.text = Text.noReactions.text
+            } else if self.reactionsCount == 1 {
+                self.reactionCountLabel.text = Text.oneReaction.text
+            } else {
+                self.reactionCountLabel.text = Text.reactionCount.text(["count": "\(self.reactionsCount)"])
+            }
+        }
+    }
 
     private lazy var stack: UIStackView = {
         let view = UIStackView.forAutoLayout()
@@ -36,7 +48,15 @@ class ThreadInteractionView: UIView {
         label.textColor = UIColor.text.detail
         return label
     }()
-
+    
+    private let reactionCountLabel: UILabel = {
+        let label = UILabel.forAutoLayout()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.numberOfLines = 1
+        label.textColor = UIColor.text.detail
+        return label
+    }()
+    
     private lazy var shareButton: UIButton = {
         let button = UIButton.init(type: .custom)
         button.setImage(UIImage.verse.share, for: .normal)
@@ -53,7 +73,7 @@ class ThreadInteractionView: UIView {
         return button
     }()
 
-    private lazy var likeButton: UIButton = {
+    private lazy var reactionButton: UIButton = {
         let button = UIButton.init(type: .custom)
         button.setImage(UIImage.verse.like, for: .normal)
         button.accessibilityHint = Text.like.text
@@ -71,11 +91,12 @@ class ThreadInteractionView: UIView {
 
         Layout.fill(view: self, with: self.stack, insets: .default)
         self.stack.addArrangedSubview(self.replyCountLabel)
-
+        self.stack.addArrangedSubview(self.reactionCountLabel)
+        
         // spacer separating left/right sides
         self.stack.addArrangedSubview(UIView())
 
-        for button in [self.shareButton, self.bookmarkButton, self.likeButton] {
+        for button in [self.shareButton, self.bookmarkButton, self.reactionButton] {
             button.constrainSize(to: 25)
             self.stack.addArrangedSubview(button)
 
