@@ -187,7 +187,7 @@ class ViewDatabase {
         try db.execute("PRAGMA journal_mode = WAL;")
         
         
-//        db.trace { print("\tSQL: \($0)") } // print all the statements
+        db.trace { print("\tSQL: \($0)") } // print all the statements
         
         if db.userVersion == 0 {
             let schemaV1url = Bundle.current.url(forResource: "ViewDatabaseSchema.sql", withExtension: nil)!
@@ -687,44 +687,56 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
 
     // MARK: recent
 
-    func recentPosts(newer then: Date, limit: Int, before: Int = 0, wantPrivate: Bool = false) throws -> Feed {
+    func recentPosts(newer then: Date, limit: Int, before: Int = 0, wantPrivate: Bool = false, onlyFollowed: Bool = true) throws -> Feed {
         guard let _ = self.openDB else {
             throw ViewDatabaseError.notOpen
         }
 
-        let qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
+        var qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
             .filter(colClaimedAt > then.millisecondsSince1970)
             .order(colClaimedAt.asc)
         
-        let followed = try self.filterOnlyFollowedPeople(qry: qry)
-        let feedOfMsgs = try self.mapQueryToKeyValue(qry: followed)
+        
+        if onlyFollowed {
+            qry = try self.filterOnlyFollowedPeople(qry: qry)
+        }
+        
+        let feedOfMsgs = try self.mapQueryToKeyValue(qry: qry)
+        
         return try self.addNumberOfPeopleReplied(msgs: feedOfMsgs)
     }
 
-    func recentPosts(older then: Date, limit: Int, before: Int = 0, wantPrivate: Bool = false) throws -> Feed {
+    func recentPosts(older then: Date, limit: Int, before: Int = 0, wantPrivate: Bool = false, onlyFollowed: Bool = true) throws -> Feed {
         guard let _ = self.openDB else {
             throw ViewDatabaseError.notOpen
         }
         
-        let qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
+        var qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
             .filter(colClaimedAt < then.millisecondsSince1970)
             .order(colClaimedAt.desc)
         
-        let followed = try self.filterOnlyFollowedPeople(qry: qry)
-        let feedOfMsgs = try self.mapQueryToKeyValue(qry: followed)
+        if onlyFollowed {
+            qry = try self.filterOnlyFollowedPeople(qry: qry)
+        }
+        
+        let feedOfMsgs = try self.mapQueryToKeyValue(qry: qry)
         return try self.addNumberOfPeopleReplied(msgs: feedOfMsgs)
     }
     
-    func recentPosts(limit: Int, before: Int = 0, wantPrivate: Bool = false) throws -> Feed {
+    func recentPosts(limit: Int, before: Int = 0, wantPrivate: Bool = false, onlyFollowed: Bool = true) throws -> Feed {
         guard let _ = self.openDB else {
             throw ViewDatabaseError.notOpen
         }
         
-        let qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
+        var qry = self.basicRecentPostsQuery(limit: limit, wantPrivate: wantPrivate)
             .order(colClaimedAt.desc)
         
-        let followed = try self.filterOnlyFollowedPeople(qry: qry)
-        let feedOfMsgs = try self.mapQueryToKeyValue(qry: followed)
+        if onlyFollowed {
+            qry = try self.filterOnlyFollowedPeople(qry: qry)
+        }
+        
+        let feedOfMsgs = try self.mapQueryToKeyValue(qry: qry)
+            
         return try self.addNumberOfPeopleReplied(msgs: feedOfMsgs)
     }
     
@@ -1092,15 +1104,28 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
         guard let db = self.openDB else {
             throw ViewDatabaseError.notOpen
         }
-        let qry = self.channels.order(colName.asc)
-        return try db.prepare(qry).map {
-            row in
-            guard let name = try row.get(colName) else {
-                // TODO: use proper error
-                throw ViewDatabaseError.unexpectedContentType("unnamed hashtag?!")
-            }
-            return Hashtag(name: name)
+        let qry = try db.prepare("""
+        SELECT distinct( channels.name), count(*), messages.received_at 
+        FROM "channels", "channel_assignments", "messages"
+        WHERE (
+            "messages"."msg_id" = "channel_assignments"."msg_ref"
+            AND
+            "channels"."id" = "channel_assignments"."chan_ref"
+        )
+        Group by channels.id
+        ORDER BY "messages.received_at" ASC
+        
+        """)
+
+        var channels: [Hashtag] = []
+        
+        for f in try qry.run() {
+            let count = f[1] as! Int64
+            let timestamp = f[2] as! Float64
+            let hashtag = Hashtag(name: "\(f[0]!)", count: count, timestamp: timestamp)
+            channels += [hashtag]
         }
+        return channels
     }
     
     // TODO: pagination
@@ -1115,7 +1140,6 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
             .join(self.abouts, on: self.abouts[colAboutID] == self.msgs[colAuthorID])
             .join(.leftOuter, self.tangles, on: self.tangles[colMessageRef] == self.channelAssigned[colMessageRef])
             .join(.leftOuter, self.posts, on: self.posts[colMessageRef] == self.channelAssigned[colMessageRef])
-            .join(.leftOuter, self.votes, on: self.votes[colMessageRef] == self.channelAssigned[colMessageRef])
             .order(colClaimedAt.desc)
 
         return try self.mapQueryToKeyValue(qry: qry)
@@ -1462,7 +1486,7 @@ CREATE INDEX contacts_state_with_author ON contacts (author_id, contact_id, stat
                     let done = Float64(msgIndex)/Float64(msgCount)
                     let prog = Notification.didUpdateDatabaseProgress(perc: done,
                                                                       status: "Processing new messages")
-                    NotificationCenter.default.post(prog)
+                    //NotificationCenter.default.post(prog)
                 }
 
                 // make sure we dont have messages from the future

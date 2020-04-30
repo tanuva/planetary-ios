@@ -15,7 +15,9 @@ class ChannelViewController: ContentViewController {
     private let dataSource = PostReplyDataSource()
     private lazy var delegate = PostReplyDelegate(on: self)
     private let prefetchDataSource = PostReplyDataSourcePrefetching()
+    
 
+    
     private lazy var tableView: UITableView = {
         let view = UITableView.forVerse()
         view.dataSource = self.dataSource
@@ -47,7 +49,9 @@ class ChannelViewController: ContentViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.addLoadingAnimation()
         Layout.fill(view: self.contentView, with: self.tableView, respectSafeArea: false)
+        self.load()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -59,6 +63,7 @@ class ChannelViewController: ContentViewController {
         Bots.current.posts(with: self.hashtag) {
             [weak self] feed, error in
             Log.optional(error)
+            self?.removeLoadingAnimation()
             self?.refreshControl.endRefreshing()
             
             if let error = error {
