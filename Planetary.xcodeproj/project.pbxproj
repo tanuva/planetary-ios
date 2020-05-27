@@ -235,6 +235,8 @@
 		23E8806022F894650074D399 /* Collection+RandomSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E8805D22F894650074D399 /* Collection+RandomSample.swift */; };
 		23E880B522857F8700486AD0 /* EnocdeJSONtest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23E880B422857F8700486AD0 /* EnocdeJSONtest.swift */; };
 		2D009BF924550868001351CB /* EveryoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D009BF824550868001351CB /* EveryoneViewController.swift */; };
+		2D79B756247E347F00781343 /* AppDelegate+Twitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D79B755247E347F00781343 /* AppDelegate+Twitter.swift */; };
+		2DADFF77247E0AD10030272D /* TwitterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DADFF76247E0AD10030272D /* TwitterViewController.swift */; };
 		53033E98237C9B0B004609F8 /* Onboarding+Repair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53033E97237C9B0B004609F8 /* Onboarding+Repair.swift */; };
 		53033E9A237F682F004609F8 /* ResumeOnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53033E99237F682F004609F8 /* ResumeOnboardingStep.swift */; };
 		53033E9C23831CD1004609F8 /* Onboarding+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53033E9B23831CD1004609F8 /* Onboarding+Status.swift */; };
@@ -847,6 +849,8 @@
 		23E8805D22F894650074D399 /* Collection+RandomSample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+RandomSample.swift"; sourceTree = "<group>"; };
 		23E880B422857F8700486AD0 /* EnocdeJSONtest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnocdeJSONtest.swift; sourceTree = "<group>"; };
 		2D009BF824550868001351CB /* EveryoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveryoneViewController.swift; sourceTree = "<group>"; };
+		2D79B755247E347F00781343 /* AppDelegate+Twitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Twitter.swift"; sourceTree = "<group>"; };
+		2DADFF76247E0AD10030272D /* TwitterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwitterViewController.swift; sourceTree = "<group>"; };
 		316D716D251CC0B347E630DA /* Pods-Planetary.appstore.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Planetary.appstore.xcconfig"; path = "Pods/Target Support Files/Pods-Planetary/Pods-Planetary.appstore.xcconfig"; sourceTree = "<group>"; };
 		3C118088E10BAE1C911EDE02 /* Pods_FBTTUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FBTTUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4468B60D82AA8885DDD68F4A /* Pods-UnitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-UnitTests/Pods-UnitTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -1475,6 +1479,7 @@
 				0ABCA8FE2436B48E00D7F39C /* AppError+LocalizedError.swift */,
 				5396A62A22445BE900C57A4B /* AppConfiguration.swift */,
 				53C2B1332295AC000018D0A8 /* AppConfiguration+Data.swift */,
+				2D79B755247E347F00781343 /* AppDelegate+Twitter.swift */,
 				53C2B12B2294E8A50018D0A8 /* AppConfiguration+Keychain.swift */,
 				53C2B1272294DFF50018D0A8 /* AppConfiguration+Migrate.swift */,
 				5374DF3F21E9ADFE00956122 /* AppController.swift */,
@@ -1996,6 +2001,7 @@
 				5372175022FD0841008A760A /* DataUsageSettingsViewController.swift */,
 				531EC409230EF2DA001A25AD /* PreviewSettingsViewController.swift */,
 				53C9FA2E22FCF64700EAC35F /* SettingsViewController.swift */,
+				2DADFF76247E0AD10030272D /* TwitterViewController.swift */,
 				5372174E22FD0084008A760A /* UserDirectorySettingsViewController.swift */,
 			);
 			path = Settings;
@@ -2203,6 +2209,7 @@
 				5312143F21CD617400F3FCEB /* Embed Frameworks */,
 				F03FDAAC62494C507A69A807 /* [CP] Embed Pods Frameworks */,
 				530E4CAE2370FBEE0094E138 /* ShellScript */,
+				3E787799941CACCB4EE11740 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2399,6 +2406,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# trigger Makefile in go-ssb-bindings\nset -e\nexport GOROOT=${PROJECT_DIR}/go-ssb-bindings/.goroot\n${PROJECT_DIR}/Scripts/go_install.sh\n\npushd ${PROJECT_DIR}/go-ssb-bindings\nmake\npopd\n";
+			showEnvVarsInLog = 0;
+		};
+		3E787799941CACCB4EE11740 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Planetary/Pods-Planetary-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Planetary/Pods-Planetary-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Planetary/Pods-Planetary-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		530E4CAE2370FBEE0094E138 /* ShellScript */ = {
@@ -3070,6 +3094,7 @@
 				53E26C5723037927009240B2 /* Date+ISO8601.swift in Sources */,
 				5396A6252244358A00C57A4B /* UIView+Layout.swift in Sources */,
 				53C966E2236D037000E70689 /* UIViewController+Report.swift in Sources */,
+				2DADFF77247E0AD10030272D /* TwitterViewController.swift in Sources */,
 				0ACE919E243D734B00EFB4E9 /* BotError+LocalizedError.swift in Sources */,
 				533F4051225E9E010060B4B9 /* DebugUIViewController.swift in Sources */,
 				53AD3FD92270FF33005228F9 /* UITableView+TableHeaderView.swift in Sources */,
@@ -3198,6 +3223,7 @@
 				8DD985D22329B94600FA2F1A /* ThreadInteractionView.swift in Sources */,
 				0AF9E0A22465D7A800910575 /* ThreadReplyPaginatedDataSource.swift in Sources */,
 				53362F672208C2B3007264CB /* AppController+Lifecycle.swift in Sources */,
+				2D79B756247E347F00781343 /* AppDelegate+Twitter.swift in Sources */,
 				53E29CDD22D7EC6F008A2CB1 /* Hashtag+String.swift in Sources */,
 				0AD8D635240EFF8800D87A95 /* RedeemInviteViewController.swift in Sources */,
 				53575509226A3113002A6989 /* KeyValueTableViewDataSource.swift in Sources */,
@@ -3625,6 +3651,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.9.24;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -3663,6 +3690,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.9.24;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",

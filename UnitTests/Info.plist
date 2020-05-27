@@ -48,6 +48,10 @@
 	<string>$(PLANETARY_NETWORK_KEY)</string>
 	<key>PLPlanetaryNetworkHMAC</key>
 	<string>$(PLANETARY_NETWORK_HMAC)</string>
+	<key>PLTwitterKey</key>
+	<string>$(TWITTER_CONSUMER_KEY)</string>
+	<key>PLTwitterSecret</key>
+	<string>$(TWITTER_CONSUMER_SECRET)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

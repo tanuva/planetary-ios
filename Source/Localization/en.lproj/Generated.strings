@@ -26,9 +26,14 @@
 "Text.showMeInDirectory" = "Show me in the directory";
 "Text.showMeInUserDirectory" = "Show me in the user directory";
 "Text.hideMeFromUserDirectory" = "Hide me from the user directory";
+"Text.twitter" = "Twitter";
+"Text.crossPostToTwitter" = "Sync my posts with Twitter";
+"Text.dontCrossPostToTwitter" = "Don't sync my posts with Twitter";
 "Text.analyticsAndCrash" = "Analytics & Crash Reports";
 "Text.usageData" = "Usage Data";
 "Text.userDirectoryMessage" = "Being in the user directory means that people can find you if they already know your name, short code or phone number.";
+"Text.twitterMessage" = "This is a two way sync between twitter and planetary. New posts on twitter are cross posted to planetary and vice versa.";
+"Text.twitterSyncSettings" = "Cross posting to / from Twitter";
 "Text.sendAnalytics" = "Send analytics to Planetary";
 "Text.dontSendAnalytics" = "Don't send analytics at all";
 "Text.analyticsMessage" = "We would like to capture anonymized data about your use of the app - and crash reports when something goes wrong - so we can make the application better.";

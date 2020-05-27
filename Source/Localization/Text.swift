@@ -53,9 +53,16 @@ enum Text: String, Localizable, CaseIterable {
     case showMeInDirectory = "Show me in the directory"
     case showMeInUserDirectory = "Show me in the user directory"
     case hideMeFromUserDirectory = "Hide me from the user directory"
+    
+    case twitter = "Twitter";
+    case crossPostToTwitter = "Sync my posts with Twitter";
+    case dontCrossPostToTwitter = "Don't sync my posts with Twitter";
+
     case analyticsAndCrash = "Analytics & Crash Reports"
     case usageData = "Usage Data"
     case userDirectoryMessage = "Being in the user directory means that people can find you if they already know your name, short code or phone number."
+    case twitterMessage = "This is a two way sync between twitter and planetary. New posts on twitter are cross posted to planetary and vice versa."
+    case twitterSyncSettings = "Cross posting to / from Twitter";
 
     case sendAnalytics = "Send analytics to Planetary"
     case dontSendAnalytics = "Don't send analytics at all"

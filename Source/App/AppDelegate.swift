@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import TwitterKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -39,14 +40,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.configureAppearance()
         self.configureBackground()
         self.configureNotifications()
+        self.configureTwitter()
         AppController.shared.launch()
 
         Analytics.shared.trackAppLaunch()
         
+
+        
         // done
         return true
     }
-
+    
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
         CrashReporting.shared.record("App will enter foreground")
         AppController.shared.resume()

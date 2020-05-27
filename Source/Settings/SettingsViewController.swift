@@ -27,6 +27,7 @@ class SettingsViewController: DebugTableViewController {
 
     internal override func updateSettings() {
         self.settings = [self.directory(),
+                         self.twitter(),
                          self.push(),
                          self.usage(),
                          self.managePubs(),
@@ -63,6 +64,36 @@ class SettingsViewController: DebugTableViewController {
             })]
 
         return (Text.userDirectory.text, settings, nil)
+    }
+    
+    // MARK: Twitter Integration
+
+    
+    private func twitter() -> DebugTableViewController.Settings {
+        var settings: [DebugTableViewCellModel] = []
+
+        settings += [DebugTableViewCellModel(title: Text.crossPostToTwitter.text,
+                                             valueClosure:
+            {
+                cell in
+                cell.showActivityIndicator()
+                DirectoryAPI.shared.me {  [weak self] (person, error) in
+                    DispatchQueue.main.async {
+                        let inDirectory = person?.in_directory ?? false
+                        self?.inDirectory = inDirectory
+                        cell.detailTextLabel?.text = inDirectory.yesOrNo
+                        cell.hideActivityIndicator(andShow: .disclosureIndicator)
+                    }
+                }
+            },
+            actionClosure:
+            {
+                [unowned self] cell in
+                let controller = TwitterSettingsViewController()
+                self.navigationController?.pushViewController(controller, animated: true)
+            })]
+
+        return (Text.twitter.text, settings, nil)
     }
 
     // MARK: Push
