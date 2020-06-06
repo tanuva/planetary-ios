@@ -115,7 +115,7 @@ class BlobCache: DictionaryCache {
         let restIdx = hexRef.index(hexRef.startIndex, offsetBy:2)
         let rest = String(hexRef[restIdx...])
         
-        var gsUrl = URL(string: "https://storage.cloud.google.com/mainnet-blobs/")!
+        var gsUrl = URL(string: "https://blobs.planetary.social/")!
         gsUrl.appendPathComponent(dir)
         gsUrl.appendPathComponent(rest)
         
@@ -156,7 +156,9 @@ class BlobCache: DictionaryCache {
                     }
                 }
                 
-                self?.dataTasks.removeValue(forKey: ref)
+                if self?.dataTasks.keys.contains(ref) ?? false {
+                    self?.dataTasks.removeValue(forKey: ref)
+                }
             }
         }
         self.dataTasks[ref] = dataTask
