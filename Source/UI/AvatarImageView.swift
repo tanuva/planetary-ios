@@ -57,12 +57,14 @@ class AvatarImageView: ImageView {
             let uuid = Caches.blobs.image(for: person.image!) {
                 [weak self] _, image in
                   DispatchQueue.main.async {
-                       if animate {
-                        self!.fade(to: image)
-                       } else {
-                        self!.image = image
-                       }
-                   }
+                    if self != nil {
+                            if animate {
+                                self!.fade(to: image)
+                            } else {
+                                self!.image = image
+                            }
+                        }
+                    }
                 return
             }
         }
