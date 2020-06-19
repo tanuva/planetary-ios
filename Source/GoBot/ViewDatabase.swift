@@ -194,7 +194,7 @@ class ViewDatabase {
         try db.execute("PRAGMA journal_mode = WAL;")
         
         
-        // db.trace { print("\tSQL: \($0)") } // print all the statements
+        db.trace { print("\tSQL: \($0)") } // print all the statements
         
         if db.userVersion == 0 {
             let schemaV1url = Bundle.current.url(forResource: "ViewDatabaseSchema.sql", withExtension: nil)!
@@ -1099,7 +1099,7 @@ class ViewDatabase {
             .select(colMessageID)
             .join(.leftOuter, self.tangles, on: self.msgs[colMessageID] == self.tangles[colMessageRef])
             .filter(colAuthorID == self.currentUserID)
-            .filter(colMsgType == "post")
+            .filter(colMsgType == "post" || colMsgType == "vote" )
             .filter(colMaybeRoot == nil)
             .filter(colHidden == false)
             .limit(limit)
@@ -1608,13 +1608,15 @@ class ViewDatabase {
                     skipped += 1
                     continue
                 }
-
+                
+                /* We're not dispalying this notification any more...
                 if msgIndex%100 == 0 { // don't hammer progress with every message
                     let done = Float64(msgIndex)/Float64(msgCount)
                     let prog = Notification.didUpdateDatabaseProgress(perc: done,
                                                                       status: "Processing new messages")
                     //NotificationCenter.default.post(prog)
                 }
+                */
 
                 // make sure we dont have messages from the future
                 // and force them to the _received_ timestamp so that they are not pinned to the top of the views

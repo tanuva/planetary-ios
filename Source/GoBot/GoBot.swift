@@ -1040,7 +1040,7 @@ class GoBot: Bot {
 
                 var all: [KeyValue] = []
                 // TODO: optimize query
-                var replies = try self.database.getRepliesToMyThreads(limit: 10)
+                var replies = try self.database.getRepliesToMyThreads(limit: 100)
                 if let me = self.identity { replies = replies.excluding(me) }
                 all.append(contentsOf: replies)
 
