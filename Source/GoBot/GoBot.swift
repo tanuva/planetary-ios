@@ -1199,6 +1199,11 @@ class GoBot: Bot {
         let counts = try? self.bot.repoStatus()
         let sequence = try? self.database.stats(table: .messagekeys)
         
+        var ownMessages = -1
+        if let identity = self._identity, let omc = try? self.database.numberOfMessages(for: identity) {
+            ownMessages = omc
+        }
+        
         var fc: Int = -1
         if let feedCount = counts?.feeds { fc = Int(feedCount) }
         var mc: Int = -1
@@ -1206,6 +1211,7 @@ class GoBot: Bot {
         self._statistics.repo = RepoStatistics(path: self.bot.currentRepoPath,
                                                feedCount: fc,
                                                messageCount: mc,
+                                               ownMessageCount: ownMessages,
                                                lastHash: counts?.lastHash ?? "")
         
         let connectionCount = self.bot.openConnections()
@@ -1225,6 +1231,11 @@ class GoBot: Bot {
         self.queue.async {
             let counts = try? self.bot.repoStatus()
             let sequence = try? self.database.stats(table: .messagekeys)
+            
+            var ownMessages = -1
+            if let identity = self._identity, let omc = try? self.database.numberOfMessages(for: identity) {
+                ownMessages = omc
+            }
 
             var fc: Int = -1
             if let feedCount = counts?.feeds { fc = Int(feedCount) }
@@ -1233,6 +1244,7 @@ class GoBot: Bot {
             self._statistics.repo = RepoStatistics(path: self.bot.currentRepoPath,
                                                    feedCount: fc,
                                                    messageCount: mc,
+                                                   ownMessageCount: ownMessages,
                                                    lastHash: counts?.lastHash ?? "")
             
             let connectionCount = self.bot.openConnections()

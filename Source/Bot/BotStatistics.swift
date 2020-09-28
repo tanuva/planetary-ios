@@ -35,15 +35,26 @@ struct MutableBotStatistics: BotStatistics {
 
 struct RepoStatistics {
 
+    /// Path to the repo
     let path: String
+    
+    /// Number of feeds in the repo
     let feedCount: Int
+    
+    /// Total number of messages
     let messageCount: Int
+    
+    /// Number of messages published by the user
+    let ownMessageCount: Int
+    
+    /// Last message in the repo
     let lastHash: String
 
-    init(path: String? = nil, feedCount: Int = -1, messageCount: Int = 0, lastHash: String = "") {
+    init(path: String? = nil, feedCount: Int = -1, messageCount: Int = 0, ownMessageCount: Int = 0, lastHash: String = "") {
         self.path = path ?? "unknown"
         self.feedCount = feedCount
         self.messageCount = messageCount
+        self.ownMessageCount = ownMessageCount
         self.lastHash = lastHash
     }
 }

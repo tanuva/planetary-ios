@@ -49,6 +49,7 @@ class MixpanelAnalytics: AnalyticsService {
         if statistics.repo.feedCount != -1 {
             params["Feed Count"] = statistics.repo.feedCount
             params["Message Count"] = statistics.repo.messageCount
+            params["Own Message Count"] = statistics.repo.ownMessageCount
         }
 
         if statistics.db.lastReceivedMessage != -3 {

@@ -41,6 +41,7 @@ class StatisticsOperation: AsynchronousOperation {
             if statistics.repo.feedCount != -1 {
                 Log.debug("Feed count: \(statistics.repo.feedCount)")
                 Log.debug("Message count: \(statistics.repo.messageCount)")
+                Log.debug("Own message count: \(statistics.repo.ownMessageCount)")
             }
 
             if statistics.db.lastReceivedMessage != -3 {
@@ -58,6 +59,13 @@ class StatisticsOperation: AsynchronousOperation {
 
             Analytics.shared.identify(statistics: statistics)
             Analytics.shared.trackBotDidStats(statistics: statistics)
+            
+            if let configuration = AppConfiguration.current,
+                let botIdentity = Bots.current.identity,
+                let configIdentity = configuration.identity,
+                botIdentity == configIdentity {
+                AppConfigurations.current.save()
+            }
 
             self?.result = .success(statistics)
             self?.finish()
