@@ -11,7 +11,7 @@ import (
 	"github.com/dgraph-io/badger"
 	"github.com/pkg/errors"
 	"go.cryptoscope.co/librarian"
-	libmkv "go.cryptoscope.co/librarian/mkv"
+	libmkv "go.cryptoscope.co/librarian/sqlite3"
 	"go.cryptoscope.co/margaret"
 	"go.cryptoscope.co/margaret/codec/msgpack"
 	"go.cryptoscope.co/margaret/multilog"
@@ -146,12 +146,14 @@ func OpenIndex(r Interface, name string, f func(librarian.SeqSetterIndex) librar
 		return nil, nil, errors.Wrap(err, "openIndex: error making index directory")
 	}
 
-	db, err := OpenMKV(pth)
+    // TODO: Here's the meddling needed to have the log on sqlite3
+
+	db, err := sql.Open(pth) // FIXME: Pseudo
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "openIndex: failed to open MKV database")
+		return nil, nil, errors.Wrap(err, "openIndex: failed to open repo database")
 	}
 
-	idx := libmkv.NewIndex(db, margaret.BaseSeq(0))
+	idx := libsqlite3.NewIndex(db, margaret.BaseSeq(0))
 	return idx, f(idx), nil
 }
 
