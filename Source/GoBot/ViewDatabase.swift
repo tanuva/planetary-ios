@@ -81,6 +81,7 @@ class ViewDatabase {
     private let colReceivedAt = Expression<Double>("received_at")
     private let colClaimedAt = Expression<Double>("claimed_at")
     private let colDecrypted = Expression<Bool>("is_decrypted")
+    private let colVotes = Expression<Int>("votes")
     
     private let colMessageRef = Expression<Int64>("msg_ref")
 
@@ -229,7 +230,7 @@ class ViewDatabase {
             if db.userVersion == 0 {
                 let schemaV1url = Bundle.current.url(forResource: "ViewDatabaseSchema.sql", withExtension: nil)!
                 try db.execute(String(contentsOf: schemaV1url))
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 1 {
                 try db.execute("""
                 CREATE INDEX messagekeys_key ON messagekeys(key);
@@ -264,9 +265,10 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """);
                 try self.migrateHashAllMessageKeys()
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 2 {
                 try db.execute("""
                 -- add new column to posts and migrate existing data
@@ -294,9 +296,10 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """);
                 try self.migrateHashAllMessageKeys()
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 3 {
                 try db.execute("""
                 ALTER TABLE messagekeys ADD hashed text;
@@ -319,9 +322,10 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """)
                 try self.migrateHashAllMessageKeys()
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 4 {
                 try db.execute("""
                 ALTER TABLE abouts ADD publicWebHosting boolean;
@@ -339,8 +343,9 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """)
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 5 {
                 try db.execute("""
                 CREATE TABLE reports (
@@ -357,8 +362,9 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """)
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 6 {
                 try db.execute("""
                 ALTER TABLE addresses ADD redeemed real default null;
@@ -368,8 +374,9 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """)
-                db.userVersion = 8
+                db.userVersion = 9
             } else if db.userVersion == 7 {
                 try db.execute("""
                 CREATE TABLE pubs (
@@ -378,9 +385,15 @@ class ViewDatabase {
                 port integer not null,
                 key text not null,
                 FOREIGN KEY ( msg_ref ) REFERENCES messages( "msg_id" ));
+                ALTER TABLE messages ADD votes integer default 0;
                 """)
-                db.userVersion = 8
+                db.userVersion = 9
 
+            } else if db.userVersion == 8 {
+                try db.execute("""
+                ALTER TABLE messages ADD votes integer default 0;
+                """)
+                db.userVersion = 9
             }
         }
 
@@ -1299,7 +1312,8 @@ class ViewDatabase {
                     blobs: try self.loadBlobs(for:msgID),
                     mentions: try self.loadMentions(for: msgID),
                     root: rootKey,
-                    text: try row.get(colText)
+                    text: try row.get(colText),
+                    votes: try row.get(colVotes)
                 )
                 
                 c = Content(from: p)
@@ -1440,7 +1454,8 @@ class ViewDatabase {
                     blobs: try self.loadBlobs(for:msgID),
                     mentions: try self.loadMentions(for: msgID),
                     root: rootKey,
-                    text: try row.get(colText)
+                    text: try row.get(colText),
+                    votes: try row.get(colVotes)
                 )
                 
                 c = Content(from: p)
@@ -1594,7 +1609,8 @@ class ViewDatabase {
                     blobs: try self.loadBlobs(for:msgID),
                     mentions: try self.loadMentions(for: msgID),
                     root: rootKey,
-                    text: try row.get(colText)
+                    text: try row.get(colText),
+                    votes: try row.get(colVotes)
                 )
                 
                 c = Content(from: p)
@@ -2098,12 +2114,18 @@ class ViewDatabase {
             try self.insertPrivateRecps(msgID: msgID, recps: v.recps)
         }
         
+        let linkID = try self.msgID(of: v.vote.link, make: true)
+        
         try db.run(self.votes.insert(
             colMessageRef <- msgID,
-            colLinkID <- try self.msgID(of: v.vote.link, make: true),
+            colLinkID <- linkID,
             colExpression <- v.vote.expression ?? "",
             colValue <- v.vote.value
         ))
+        
+        if v.vote.value > 0 {
+            try db.run(self.msgs.where(colID == linkID).update(colVotes <- colVotes + 1))
+        }
         
         try self.insertBranches(msgID: msgID, root: v.root, branches: v.branch)
     }

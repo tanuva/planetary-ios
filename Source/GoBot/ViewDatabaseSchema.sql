@@ -123,6 +123,8 @@ CREATE TABLE messages (
     
     hidden              BOOLEAN default false, -- for moderation/soft-delete
     
+    votes                INTEGER DEFAULT 0,
+    
     -- this is a very naive way of requiring _unforked chain_
     -- a proper implementation would require checks on the previous field
     -- but all this is handled in go-ssb anyway

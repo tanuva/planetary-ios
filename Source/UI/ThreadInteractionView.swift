@@ -48,6 +48,14 @@ class ThreadInteractionView: UIView {
         label.textColor = UIColor.text.detail
         return label
     }()
+    
+    private let likeCountLabel: UILabel = {
+        let label = UILabel.forAutoLayout()
+        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
+        label.numberOfLines = 1
+        label.textColor = UIColor.text.detail
+        return label
+    }()
 
     private lazy var shareButton: UIButton = {
         let button = UIButton.init(type: .custom)
@@ -85,6 +93,8 @@ class ThreadInteractionView: UIView {
 
         // spacer separating left/right sides
         self.stack.addArrangedSubview(UIView())
+        
+        self.stack.addArrangedSubview(self.likeCountLabel)
 
         for button in [self.likeButton, self.shareButton] {
             button.constrainSize(to: 25)
@@ -100,6 +110,7 @@ class ThreadInteractionView: UIView {
     func update() {
         //check to see if we're currently linking this post
         let me = Bots.current.identity
+        
         if self.replies!.count-1 >= 0 {
             for index in 0...self.replies!.count-1 {
                 if self.replies!.keyValueBy(index: index)?.value.content.type ==  Planetary.ContentType.vote {
@@ -110,6 +121,8 @@ class ThreadInteractionView: UIView {
                 }
             }
         }
+        
+        self.likeCountLabel.text = "\(self.post?.value.content.post?.votes ?? 0)"
             
         if self.userLikes {
             self.likeButton.setImage(UIImage.verse.liked, for: .normal)

@@ -27,6 +27,7 @@ class Post: ContentCodable {
     let root: MessageIdentifier?
     let text: String
     let type: ContentType
+    let votes: Int
 
     // MARK: Calculated temporal unserialized properties
 
@@ -57,6 +58,8 @@ class Post: ContentCodable {
         // unused
         self.recps = nil
         self.reply = nil
+        
+        self.votes = 0
     }
 
     /// Intended to be used to create models in the view database or unit tests.
@@ -65,13 +68,16 @@ class Post: ContentCodable {
          hashtags: Hashtags? = nil,
          mentions: [Mention]? = nil,
          root: MessageIdentifier? = nil,
-         text: String)
+         text: String,
+         votes: Int = 0)
     {
         // required
         self.branch = branches
         self.root = root
         self.text = text
         self.type = .post
+        
+        self.votes = votes
         
         var m: Mentions = []
         if let mentions = mentions {
@@ -105,6 +111,7 @@ class Post: ContentCodable {
         root = try? values.decode(Identifier.self, forKey: .root)
         text = try values.decode(String.self, forKey: .text)
         type = try values.decode(ContentType.self, forKey: .type)
+        votes = 0
     }
 
     private static func decodeBranch(from values: KeyedDecodingContainer<Post.CodingKeys>) -> [Identifier]? {
