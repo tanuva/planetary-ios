@@ -112,6 +112,8 @@ class DirectoryOnboardingStep: OnboardingStep, UITableViewDataSource, UITableVie
     }
 
     override func primary() {
+        self.next(); return
+        /*
         var identities = self.selected.map { $0.identity }
         identities.append(contentsOf: Environment.PlanetarySystem.planets)
 
@@ -134,7 +136,7 @@ class DirectoryOnboardingStep: OnboardingStep, UITableViewDataSource, UITableVie
             if success {
                 self?.next()
             }
-        }
+        }*/
     }
 
     // MARK: table stuff

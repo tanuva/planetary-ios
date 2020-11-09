@@ -34,9 +34,9 @@ class DoneOnboardingStep: OnboardingStep {
     override func customizeView() {
 
         let insets = UIEdgeInsets(top: 30, left: 0, bottom: -16, right: 0)
-        Layout.fillSouth(of: self.view.hintLabel, with: self.directoryToggle, insets: insets)
-        
-        Layout.fillSouth(of: self.directoryToggle, with: self.publicWebHostingToggle, insets: insets)
+//        Layout.fillSouth(of: self.view.hintLabel, with: self.directoryToggle, insets: insets)
+//        Layout.fillSouth(of: self.directoryToggle, with: self.publicWebHostingToggle, insets: insets)
+        Layout.fillSouth(of: self.view.hintLabel, with: self.publicWebHostingToggle, insets: insets)
 
         self.view.hintLabel.text = Text.Onboarding.thanksForTrying.text
 

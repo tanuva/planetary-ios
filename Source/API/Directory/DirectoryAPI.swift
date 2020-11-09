@@ -15,11 +15,11 @@ struct DirectoryAPI {
         #if UNIT_TESTS
         return NullDirectoryAPI()
         #else
-        if CommandLine.arguments.contains("mock-directory-api") {
+        //if CommandLine.arguments.contains("mock-directory-api") {
             return NullDirectoryAPI()
-        } else {
-            return VerseDirectoryAPI()
-        }
+        //} else {
+        //    return VerseDirectoryAPI()
+        //}
         #endif
     }()
     

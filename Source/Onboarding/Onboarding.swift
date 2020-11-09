@@ -126,6 +126,7 @@ class Onboarding {
                 // TODO abstract Verse Directory API
                 // TODO https://app.asana.com/0/0/1134329918920788/f
                 // join verse
+                /*
                 DirectoryAPI.shared.join(identity: secret.identity, name: name, birthdate: birthdate, phone: phone) { person, error in
                     Log.optional(error)
                     CrashReporting.shared.reportIfNeeded(error: error)
@@ -156,6 +157,7 @@ class Onboarding {
                         Onboarding.didStart(configuration: configuration, secret: secret)
                     }
                 }
+                */
             }
         }
     }

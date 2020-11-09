@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class ContactsOnboardingStep: OnboardingStep {
-
+    
     init() {
         super.init(.contacts)
     }
